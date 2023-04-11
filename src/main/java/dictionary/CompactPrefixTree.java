@@ -3,6 +3,7 @@ package dictionary;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /** CompactPrefixTree class, implements Dictionary ADT and
  *  several additional methods. Can be used as a spell checker.
@@ -82,7 +83,11 @@ public class CompactPrefixTree implements Dictionary {
     public void printTree(String filename) {
         // FILL IN CODE
         // Uses toString() method; outputs info to a file
+        try (PrintWriter pw = new PrintWriter(filename)) {
 
+        } catch (IOException e) {
+            System.out.println("File error.");
+        }
     }
 
     /**
@@ -204,6 +209,20 @@ public class CompactPrefixTree implements Dictionary {
     private String toString(Node node, int numIndentations) {
         StringBuilder s = new StringBuilder();
         // FILL IN CODE
+        String indents = String.format("%" + numIndentations + "s", "");
+
+        if (node == null) {
+            return System.lineSeparator();
+        }
+        if (node.isWord) {
+            s.append(indents + node.prefix + "*" + System.lineSeparator());
+        }
+        if (!node.isWord) {
+            s.append(indents + node.prefix + System.lineSeparator());
+        }
+        for (Node child : node.children) {
+            toString(child, numIndentations + 1);
+        }
 
         return s.toString();
     }
