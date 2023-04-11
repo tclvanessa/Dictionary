@@ -1,5 +1,9 @@
 package dictionary;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 /** CompactPrefixTree class, implements Dictionary ADT and
  *  several additional methods. Can be used as a spell checker.
  *  Fill in code and feel free to add additional methods as needed.
@@ -18,8 +22,17 @@ public class CompactPrefixTree implements Dictionary {
     public CompactPrefixTree(String filename) {
         root = new Node();
         // Read each word from the file, and call the add method
-        // FILL IN CODE
+        try (FileReader f = new FileReader(filename)) {
+            BufferedReader br = new BufferedReader(f);
+            String word;
 
+            while ((word = br.readLine()) != null) {
+                add(word);
+                word = br.readLine();
+            }
+        } catch (IOException e) {
+            System.out.println("No file found.");
+        }
     }
 
     /** Adds a given word to the dictionary.
