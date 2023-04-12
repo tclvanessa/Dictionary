@@ -92,6 +92,42 @@ public class CompactPrefixTree implements Dictionary {
         }
     }
 
+    // printing word list
+    public void print() {
+        print("", root);
+    }
+
+    private void print(String s, Node node) {
+        if (node.isWord) {
+            System.out.println(s + node.prefix);
+        }
+        for (Node child : node.children) {
+            if (child != null) {
+                print(s + node.prefix, child);
+            }
+        }
+    }
+
+    // printing prefix tree
+    public void printT() {
+        printTrees("", root);
+    }
+
+    private void printTrees(String s, Node node) {
+        if (node == null) {
+            return;
+        }
+        if (node.isWord) {
+            System.out.println(s + node.prefix + "*");
+        }
+        if (!node.isWord) {
+            System.out.println(s + node.prefix);
+        }
+        for (Node child : node.children) {
+            printTrees(s + " ", child);
+        }
+    }
+
     /**
      * Return an array of the entries in the dictionary that are as close as possible to
      * the parameter word.  If the word passed in is in the dictionary, then
@@ -176,12 +212,16 @@ public class CompactPrefixTree implements Dictionary {
         if (node == null) {
             return false;
         }
+        if (!commonPrefix(s, node.prefix).equals(node.prefix)) {
+            return false;
+        }
         if (node.prefix.equals(s)) {
             return node.isWord;
         }
         if (commonPrefix(s, node.prefix).equals(node.prefix)) {
             String suffix = suffix(s, node.prefix);
-            int index = findIndexDifference(s, node.prefix);
+            int indexDiff = findIndexDifference(suffix, node.prefix);
+            int index = ((int) suffix.charAt(indexDiff)) - ((int) 'a');
             return check(suffix, node.children[index]);
         }
 
@@ -205,7 +245,8 @@ public class CompactPrefixTree implements Dictionary {
         }
         if (commonPrefix(prefix, node.prefix).equals(node.prefix)) {
             String suffix = suffix(prefix, node.prefix);
-            int index = findIndexDifference(prefix, node.prefix);
+            int indexDiff = findIndexDifference(prefix, node.prefix);
+            int index = ((int) suffix.charAt(indexDiff)) - ((int) 'a');
             return checkPrefix(suffix, node.children[index]);
         }
 
@@ -299,14 +340,8 @@ public class CompactPrefixTree implements Dictionary {
         for (Node child : node.children) {
             toString(child, numIndentations + 1);
         }
-
-        s.append("HEY");
-
         return s.toString();
     }
-
-
-
 
     // Add a private suggest method. Decide which parameters it should have
 
