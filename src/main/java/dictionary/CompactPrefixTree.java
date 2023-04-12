@@ -83,8 +83,10 @@ public class CompactPrefixTree implements Dictionary {
     public void printTree(String filename) {
         // FILL IN CODE
         // Uses toString() method; outputs info to a file
+        String str = toString();
         try (PrintWriter pw = new PrintWriter(filename)) {
-
+            //pw.println("Hello");
+            pw.print(str);
         } catch (IOException e) {
             System.out.println("File error.");
         }
@@ -171,6 +173,17 @@ public class CompactPrefixTree implements Dictionary {
      */
     private boolean check(String s, Node node) {
         // FILL IN CODE
+        if (node == null) {
+            return false;
+        }
+        if (node.prefix.equals(s)) {
+            return node.isWord;
+        }
+        if (commonPrefix(s, node.prefix).equals(node.prefix)) {
+            String suffix = suffix(s, node.prefix);
+            int index = findIndexDifference(s, node.prefix);
+            return check(suffix, node.children[index]);
+        }
 
         return false; // don't forget to change it
     }
@@ -184,8 +197,67 @@ public class CompactPrefixTree implements Dictionary {
      */
     private boolean checkPrefix(String prefix, Node node) {
         // FILL IN CODE
+        if (node == null) {
+            return false;
+        }
+        if (prefix.equals(commonPrefix(prefix, node.prefix))) {
+            return true;
+        }
+        if (commonPrefix(prefix, node.prefix).equals(node.prefix)) {
+            String suffix = suffix(prefix, node.prefix);
+            int index = findIndexDifference(prefix, node.prefix);
+            return checkPrefix(suffix, node.children[index]);
+        }
 
         return false; // don't forget to change it
+    }
+
+    /**
+     * A private recursive method to get the common prefix between two strings
+     *
+     * @param wordOne
+     * @param wordTwo
+     * @return the common prefix between the two strings
+     */
+    private String commonPrefix(String wordOne, String wordTwo) {
+        String prefix = "";
+        int count = 0;
+
+        while (count < wordOne.length() && count < wordTwo.length()) {
+            char first = wordOne.charAt(count);
+            char second = wordTwo.charAt(count);
+            if (first != second) {
+                break;
+            }
+            count++;
+        }
+        prefix = wordOne.substring(0, count);
+
+        return prefix;
+    }
+
+    /**
+     * A private recursive method to get the suffix between two strings
+     *
+     * @param wordOne
+     * @param wordTwo
+     * @return the suffix between the two strings
+     */
+    private String suffix(String wordOne, String wordTwo) {
+        String suffix = "";
+        int count = 0;
+
+        while (count < wordOne.length() && count < wordTwo.length()) {
+            char first = wordOne.charAt(count);
+            char second = wordTwo.charAt(count);
+            if (first != second) {
+                break;
+            }
+            count++;
+        }
+        suffix = wordOne.substring(count, wordOne.length());
+
+        return suffix;
     }
 
     /**
@@ -205,11 +277,15 @@ public class CompactPrefixTree implements Dictionary {
     }
 
     // A private recursive helper method for toString
-    // that takes the node and the number of indentations, and returns the tree  (printed with indentations) in a string.
+    // that takes the node and the number of indentations, and returns the tree (printed with indentations) in a string.
     private String toString(Node node, int numIndentations) {
         StringBuilder s = new StringBuilder();
         // FILL IN CODE
-        String indents = String.format("%" + numIndentations + "s", "");
+        StringBuilder sb = new StringBuilder(numIndentations);
+        for (int i = 0; i < numIndentations; i++) {
+            sb.append(" ");
+        }
+        String indents = sb.toString();
 
         if (node == null) {
             return System.lineSeparator();
@@ -224,8 +300,12 @@ public class CompactPrefixTree implements Dictionary {
             toString(child, numIndentations + 1);
         }
 
+        s.append("HEY");
+
         return s.toString();
     }
+
+
 
 
     // Add a private suggest method. Decide which parameters it should have
