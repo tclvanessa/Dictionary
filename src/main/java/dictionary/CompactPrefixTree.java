@@ -83,9 +83,9 @@ public class CompactPrefixTree implements Dictionary {
     public void printTree(String filename) {
         // FILL IN CODE
         // Uses toString() method; outputs info to a file
-        String str = toString();
         try (PrintWriter pw = new PrintWriter(filename)) {
             //pw.println("Hello");
+            String str = toString();
             pw.print(str);
         } catch (IOException e) {
             System.out.println("File error.");
@@ -149,8 +149,95 @@ public class CompactPrefixTree implements Dictionary {
         // Note: you need to create a private suggest method in this class
         // (like we did for methods add, check, checkPrefix)
 
+        return suggestWords(word, root.prefix, this.root, numSuggestions); // don't forget to change it
+    }
 
-        return null; // don't forget to change it
+    private String[] suggestWords(String s, String prefix, Node node, int numSuggestions) {
+        String word = prefix + s;
+
+        // If word passed is in list, return array of length 1 that contains that word.
+        if (check(word)) {
+            String[] arrWords = new String[1];
+            arrWords[0] = word;
+            return arrWords;
+        }
+
+        // Array of numSuggestion different words
+        String[] arrWords = new String[numSuggestions];
+
+        // If the string matches the prefix
+        if (s.equals(node.prefix)) {
+            int count = 0;
+            // Loop until count reaches numSuggestions
+            while (count < numSuggestions) {
+                // If the suffix exists, put the word into the array
+                if (findSuffix(arrWords, prefix, node) != null) {
+                    arrWords[count] = prefix + findSuffix(arrWords, prefix, node);
+                }
+                // Otherwise, run it through the method against with a smaller part of the word
+                else {
+                    return suggestWords(s.substring(0, s.length() - 2), "", root, numSuggestions);
+                }
+                count++;
+            }
+            return arrWords;
+        } else {
+            String suffix = suffix(s, node.prefix);
+            int indexDiff = findIndexDifference(suffix, node.prefix);
+            int index = ((int) suffix.charAt(indexDiff)) - ((int) 'a');
+            Node newNode = node.children[index];
+
+            if (newNode == null) {
+                int count = 0;
+
+                while (count < numSuggestions) {
+                    if (findSuffix(arrWords, prefix, node) != null) {
+                        arrWords[count] = prefix + findSuffix(arrWords, prefix, node);
+                    } else {
+                        return suggestWords(s.substring(0, s.length() - 2), "", root, numSuggestions);
+                    }
+                    count++;
+                }
+                return arrWords;
+            }
+            String pre = prefix + node.prefix;
+            return suggestWords(suffix, pre, newNode, numSuggestions);
+        }
+    }
+
+    // Finding the different suffix that matches with given prefix
+    private String findSuffix(String[] arr, String prefix, Node node) {
+        int count = 0;
+        boolean found = checkWords(arr, prefix + node.prefix);
+
+        // If node is a word and it does not exist in the list, return prefix
+        if (node.isWord && found == false) {
+            return node.prefix;
+        }
+
+        prefix = prefix + node.prefix;
+
+        // Loop until count reaches array of children length
+        while (count < node.children.length) {
+            Node newNode = node.children[count];
+
+            // If the node in array of children isn't null, return prefix
+            if (newNode != null && findSuffix(arr, prefix, newNode) != null) {
+                return node.prefix + findSuffix(arr, prefix, newNode);
+            }
+            count++;
+        }
+        return null;
+    }
+
+    private boolean checkWords(String[] arr, String prefix) {
+        // If word is already in array, return true, otherwise false
+        for (String word : arr) {
+            if (prefix.equals(word)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ---------- Private helper methods ---------------
@@ -321,24 +408,29 @@ public class CompactPrefixTree implements Dictionary {
     // that takes the node and the number of indentations, and returns the tree (printed with indentations) in a string.
     private String toString(Node node, int numIndentations) {
         StringBuilder s = new StringBuilder();
-        // FILL IN CODE
         StringBuilder sb = new StringBuilder(numIndentations);
+
+        // Loop to create the indentations
         for (int i = 0; i < numIndentations; i++) {
             sb.append(" ");
         }
-        String indents = sb.toString();
+        String indent = sb.toString();
 
+        // If the node is null, return new line
         if (node == null) {
-            return System.lineSeparator();
+            return "";
         }
+        // If the node is a word, append the node with an asterisk and new line
         if (node.isWord) {
-            s.append(indents + node.prefix + "*" + System.lineSeparator());
+            s.append(indent + node.prefix + "*" + System.lineSeparator());
         }
+        // If the node isn't a word, append the word and new line
         if (!node.isWord) {
-            s.append(indents + node.prefix + System.lineSeparator());
+            s.append(indent + node.prefix + System.lineSeparator());
         }
+        // Loop involving recursion with the node and another indent
         for (Node child : node.children) {
-            toString(child, numIndentations + 1);
+            s.append(toString(child, numIndentations + 1));
         }
         return s.toString();
     }
