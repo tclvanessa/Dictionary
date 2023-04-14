@@ -49,7 +49,7 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the word is in the dictionary, false otherwise
      */
     public boolean check(String word) {
-        return check(word.toLowerCase(), root); // Calling a aprivate check method
+        return check(word.toLowerCase(), root); // Calling a private check method
     }
 
     /**
@@ -81,10 +81,8 @@ public class CompactPrefixTree implements Dictionary {
      * @param filename the name of the file where to output the tree
      */
     public void printTree(String filename) {
-        // FILL IN CODE
         // Uses toString() method; outputs info to a file
         try (PrintWriter pw = new PrintWriter(filename)) {
-            //pw.println("Hello");
             String str = toString();
             pw.print(str);
         } catch (IOException e) {
@@ -183,8 +181,7 @@ public class CompactPrefixTree implements Dictionary {
             return arrWords;
         } else {
             String suffix = suffix(s, node.prefix);
-            int indexDiff = findIndexDifference(suffix, node.prefix);
-            int index = ((int) suffix.charAt(indexDiff)) - ((int) 'a');
+            int index = getIndex(suffix);
             Node newNode = node.children[index];
 
             if (newNode == null) {
@@ -295,7 +292,6 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the prefix is in the dictionary, false otherwise
      */
     private boolean check(String s, Node node) {
-        // FILL IN CODE
         if (node == null) {
             return false;
         }
@@ -307,8 +303,7 @@ public class CompactPrefixTree implements Dictionary {
         }
         if (commonPrefix(s, node.prefix).equals(node.prefix)) {
             String suffix = suffix(s, node.prefix);
-            int indexDiff = findIndexDifference(suffix, node.prefix);
-            int index = ((int) suffix.charAt(indexDiff)) - ((int) 'a');
+            int index = getIndex(suffix);
             return check(suffix, node.children[index]);
         }
 
@@ -332,8 +327,7 @@ public class CompactPrefixTree implements Dictionary {
         }
         if (commonPrefix(prefix, node.prefix).equals(node.prefix)) {
             String suffix = suffix(prefix, node.prefix);
-            int indexDiff = findIndexDifference(prefix, node.prefix);
-            int index = ((int) suffix.charAt(indexDiff)) - ((int) 'a');
+            int index = getIndex(suffix);
             return checkPrefix(suffix, node.children[index]);
         }
 
@@ -404,6 +398,14 @@ public class CompactPrefixTree implements Dictionary {
         return index;
     }
 
+    private int getIndex(String s) {
+        char one = s.charAt(0);
+        char two = 'a';
+
+        int index = (int) one - (int) two;
+        return index;
+    }
+
     // A private recursive helper method for toString
     // that takes the node and the number of indentations, and returns the tree (printed with indentations) in a string.
     private String toString(Node node, int numIndentations) {
@@ -420,14 +422,17 @@ public class CompactPrefixTree implements Dictionary {
         if (node == null) {
             return "";
         }
-        // If the node is a word, append the node with an asterisk and new line
+
+        s.append(indent + node.prefix);
+        // If the node is a word, append an asterisk and new line
         if (node.isWord) {
-            s.append(indent + node.prefix + "*" + System.lineSeparator());
+            s.append("*" + System.lineSeparator());
         }
-        // If the node isn't a word, append the word and new line
-        if (!node.isWord) {
-            s.append(indent + node.prefix + System.lineSeparator());
+        // If the node isn't a word, append the new line
+        else {
+            s.append(System.lineSeparator());
         }
+//
         // Loop involving recursion with the node and another indent
         for (Node child : node.children) {
             s.append(toString(child, numIndentations + 1));

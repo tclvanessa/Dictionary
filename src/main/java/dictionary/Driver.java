@@ -1,5 +1,7 @@
 package dictionary;
 
+import java.util.Arrays;
+
 /** The Driver class for CompactPrefixTree */
 public class Driver {
     public static void main(String[] args) {
@@ -21,20 +23,18 @@ public class Driver {
             System.out.println("Checking word: " + dict.check("cat"));
             System.out.println("Checking word: " + dict.check("wring"));
 
-//            CompactPrefixTree smth = new CompactPrefixTree();
-//            smth.add("something");
-//            smth.add("somethoughts");
-//            smth.add("somewhere");
-//            smth.add("somehow");
-//            smth.add("somebeing");
-//            smth.add("search");
-//            smth.add("bear");
-//            smth.add("because");
-//            String[] arr = new String[100];
-//            arr = smth.suggest("some", 50);
-//            for (int i = 0; i < arr.length; i++) {
-//                    System.out.println(arr[i]);
-//            }
+            CompactPrefixTree smth = new CompactPrefixTree();
+            smth.add("acedia");
+            smth.add("aceldma");
+            smth.add("acequia");
+            smth.add("somebeing");
+            smth.add("search");
+            smth.add("bear");
+            smth.add("because");
+            System.out.println(smth.toString());
+            String[] arr = new String[100];
+//            arr = smth.suggest("ace", 4);
+//            System.out.println(Arrays.toString(arr));
 
             // Add other "tests"
     }
