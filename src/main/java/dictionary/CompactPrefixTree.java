@@ -25,9 +25,9 @@ public class CompactPrefixTree implements Dictionary {
         // Read each word from the file, and call the add method
         try (FileReader f = new FileReader(filename)) {
             BufferedReader br = new BufferedReader(f);
-            String word;
+            String word = br.readLine();
 
-            while ((word = br.readLine()) != null) {
+            while (word != null) {
                 add(word);
                 word = br.readLine();
             }
@@ -307,7 +307,7 @@ public class CompactPrefixTree implements Dictionary {
             return check(suffix, node.children[index]);
         }
 
-        return false; // don't forget to change it
+        return false;
     }
 
     /**
@@ -432,7 +432,7 @@ public class CompactPrefixTree implements Dictionary {
         else {
             s.append(System.lineSeparator());
         }
-//
+
         // Loop involving recursion with the node and another indent
         for (Node child : node.children) {
             s.append(toString(child, numIndentations + 1));
