@@ -15,13 +15,13 @@ public class Driver {
             dict.add("wrist");
             dict.add("wrath");
             dict.add("wristle");
-            //((CompactPrefixTree) dict).print();
-            //((CompactPrefixTree) dict).printT();
-            System.out.println(dict.toString());
-            System.out.println(dict.checkPrefix("ca"));
-            System.out.println(dict.checkPrefix("ch"));
-            System.out.println("Checking word: " + dict.check("cat"));
-            System.out.println("Checking word: " + dict.check("wring"));
+            ((CompactPrefixTree) dict).print();
+            ((CompactPrefixTree) dict).printT();
+//            System.out.println(dict.toString());
+//            System.out.println(dict.checkPrefix("ca"));
+//            System.out.println(dict.checkPrefix("ch"));
+//            System.out.println("Checking word: " + dict.check("cat"));
+//            System.out.println("Checking word: " + dict.check("wring"));
 
             CompactPrefixTree smth = new CompactPrefixTree();
             smth.add("acedia");
@@ -31,8 +31,8 @@ public class Driver {
             smth.add("search");
             smth.add("bear");
             smth.add("because");
-            System.out.println(smth.toString());
-            String[] arr = new String[100];
+//            System.out.println(smth.toString());
+//            String[] arr = new String[100];
 //            arr = smth.suggest("ace", 4);
 //            System.out.println(Arrays.toString(arr));
 
